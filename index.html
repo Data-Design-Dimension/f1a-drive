@@ -131,7 +131,7 @@ document.getElementById("starters").innerHTML=th.s.map(function(x){return `<div 
 // waveform
 var wv=document.getElementById("wv");
 for(var i=0;i<36;i++){var e=document.createElement("i");e.style.height=(10+Math.abs(Math.sin(i*0.7))*38)+"px";wv.appendChild(e)}
-var latest=null,au=null;
+var latest="demo-note.mp3",au=null;
 try{speechSynthesis.getVoices()}catch(e){} 
 document.getElementById("play").onclick=function(){
 wv.classList.add("on");
