@@ -132,12 +132,20 @@ document.getElementById("starters").innerHTML=th.s.map(function(x){return `<div 
 var wv=document.getElementById("wv");
 for(var i=0;i<36;i++){var e=document.createElement("i");e.style.height=(10+Math.abs(Math.sin(i*0.7))*38)+"px";wv.appendChild(e)}
 var latest=null,au=null;
+try{speechSynthesis.getVoices()}catch(e){} 
 document.getElementById("play").onclick=function(){
 wv.classList.add("on");
 if(latest){au=new Audio(latest);au.onended=function(){wv.classList.remove("on")};au.play();return}
 try{
 var u=new SpeechSynthesisUtterance(`Before lights out I always take three slow breaths and say my name out loud. Then I remember why I started. If today is rough for you, try that. See you at the next race.`);
-u.onend=function(){wv.classList.remove("on")};speechSynthesis.cancel();speechSynthesis.speak(u)
+u.onend=function(){wv.classList.remove("on")};
+var vs=speechSynthesis.getVoices();
+var pick=vs.find(function(v){return /Aria|Jenny|Natural/i.test(v.name)})||
+ vs.find(function(v){return /Samantha|Ava|Allison|Google UK English Female|Google US English/i.test(v.name)})||
+ vs.find(function(v){return /en/i.test(v.lang)});
+if(pick)u.voice=pick;
+u.rate=0.95;
+speechSynthesis.cancel();speechSynthesis.speak(u)
 }catch(e){wv.classList.remove("on")}
 };
 document.getElementById("stop").onclick=function(){wv.classList.remove("on");try{speechSynthesis.cancel()}catch(e){}if(au)au.pause()};
