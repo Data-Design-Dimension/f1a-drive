@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>f1a-drive</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f3fb;--panel:#ffffff;--ink:#21172f;--mute:#6d6280;--pink:#d6247f;--mint:#0f8f78;--line:#e2d9ee;--onpink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14101d;--panel:#1f182d;--ink:#f3eefb;--mute:#a79bbd;--pink:#ff4fa3;--mint:#6ff0d2;--line:#322744;--onpink:#14101d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14101d;--panel:#1f182d;--ink:#f3eefb;--mute:#a79bbd;--pink:#ff4fa3;--mint:#6ff0d2;--line:#322744;--onpink:#14101d;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
+main{max-width:480px;margin:0 auto;padding:16px}
+h1,h2{font-family:"Bricolage Grotesque",Figtree,sans-serif;margin:0;line-height:1.1}
+h1{font-size:30px;font-weight:800}
+h2{font-size:20px;font-weight:600;margin-bottom:8px}
+p{margin:0 0 8px}
+.mute{color:var(--mute);font-size:14px}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;margin:14px 0}
+.seg button{flex:1;border:0;background:none;color:var(--mute);font:600 15px Figtree,sans-serif;padding:10px;border-radius:999px;cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--pink);color:var(--onpink)}
+button:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.who{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.av{width:48px;height:48px;border-radius:50%;background:var(--pink);color:var(--onpink);display:grid;place-items:center;font:800 18px "Bricolage Grotesque",sans-serif}
+.wave{display:flex;gap:3px;align-items:center;height:48px;margin:10px 0}
+.wave i{flex:1;background:var(--line);border-radius:3px;min-height:6px}
+.wave.on i{background:var(--pink)}
+.btn{border:0;border-radius:999px;background:var(--pink);color:var(--onpink);font:600 16px Figtree,sans-serif;padding:12px 20px;cursor:pointer}
+.btn.alt{background:none;color:var(--ink);border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cloud{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;min-height:230px;padding:8px 0}
+.b{border-radius:50%;border:2px solid var(--mint);background:transparent;color:var(--ink);cursor:pointer;display:grid;place-items:center;text-align:center;padding:6px;font:600 12px/1.15 Figtree,sans-serif;transition:width .35s,height .35s,box-shadow .35s}
+.b[aria-pressed="true"]{background:var(--mint);color:#102;border-color:var(--mint)}
+.b small{display:block;font-weight:400;opacity:.8}
+.pulse{animation:pl var(--spd,3s) ease-out infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--mint) 55%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+.starter{border-left:4px solid var(--pink);padding:6px 12px;margin:8px 0;background:var(--bg);border-radius:0 10px 10px 0}
+.hide{display:none}
+.rec{background:#c8102e;color:#fff}
+ul{padding-left:18px;margin:6px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>f1a-drive</h1>
+<p class="mute">Drivers talk. Fans answer. The loudest themes get heard first.</p>
+
+<div class="seg" role="tablist">
+<button role="tab" id="tf" aria-selected="true">I’m a fan</button>
+<button role="tab" id="td" aria-selected="false">I’m a driver</button>
+</div>
+
+<section id="fan">
+<div class="card">
+<div class="who"><div class="av">DD</div><div><h2 style="margin:0">Demo Driver</h2><div class="mute">Sample profile, not a real driver</div></div></div>
+<div id="fnote" class="mute">Latest voice note · about 40 sec</div>
+<div class="wave" id="wv"></div>
+<div class="row"><button class="btn" id="play">Play note</button><button class="btn alt" id="stop">Stop</button></div>
+<p class="mute" style="margin-top:10px">Listen while parked or as a passenger. Never while driving.</p>
+</div>
+<div class="card">
+<h2>What should she talk about next?</h2>
+<p class="mute">Tap a theme to vote. Tap again to take it back. More votes, bigger bubble.</p>
+<div class="cloud" id="cloudF" role="group" aria-label="Themes"></div>
+<div class="mute" id="fmsg"></div>
+</div>
+</section>
+
+<section id="drv" class="hide">
+<div class="card">
+<h2>Fans want to hear about</h2>
+<div class="cloud" id="cloudD" role="group" aria-label="Fan themes"></div>
+<div class="mute">Bigger and faster pulse means more fan votes, with older votes fading.</div>
+</div>
+<div class="card">
+<h2>Record a note</h2>
+<p class="mute" id="topic">Pick a bubble above to get a starter.</p>
+<div id="starters"></div>
+<div class="row"><button class="btn" id="rec">Record</button><span class="mute" id="recmsg"></span></div>
+<div id="notes"></div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+var THEMES=[
+{id:"nerves",t:"Nerves before a race",v:[3,5,8],s:[`Before lights out I always…`,`The one thing that calms me down is…`]},
+{id:"reset",t:"Bad day reset",v:[6,4],s:[`Last time it went wrong, I…`,`If today is rough for you, try…`]},
+{id:"train",t:"How I train",v:[2,2,3],s:[`My week looks like…`,`The part of training nobody sees is…`]},
+{id:"only",t:"Being the only girl in the room",v:[5,9,12],s:[`The first time I walked in, I felt…`,`What I wish someone had told me was…`]},
+{id:"school",t:"School and racing",v:[4,3],s:[`On a race week, my school day…`,`How I keep up with everything…`]},
+{id:"car",t:"What the car feels like",v:[1,2],s:[`Turn one feels like…`,`The sound I hear most is…`]},
+{id:"qa",t:"Answer fan questions",v:[2,1,1],s:[`A fan asked me…`,`Quick answers, go…`]}
+];
+// v = hours-ago of each seeded vote
+var mine={},HALF=48; // half-life in hours: a vote loses half its weight every 48h
+function score(th){ // time-decayed vote sum
+var s=th.v.reduce(function(a,h){return a+Math.pow(0.5,h/HALF)},0);
+return s+(mine[th.id]?1:0);
+}
+function size(sc,max){return Math.round(62+96*Math.sqrt(sc/max))} // sqrt keeps area ~ votes
+function draw(el,big){
+var sc=THEMES.map(score),max=Math.max.apply(null,sc.concat([1]));
+el.innerHTML="";
+THEMES.forEach(function(th,i){
+var b=document.createElement("button"),d=size(sc[i],max);
+b.className="b"+(sc[i]/max>0.5?" pulse":"");
+b.style.width=b.style.height=d+"px";
+b.style.setProperty("--spd",(4-3*sc[i]/max).toFixed(1)+"s");
+b.setAttribute("aria-pressed",!!mine[th.id]);
+b.innerHTML=th.t+"<small>"+sc[i].toFixed(1)+" pts</small>";
+b.onclick=function(){
+if(big){pick(th)}else{mine[th.id]=!mine[th.id];
+document.getElementById("fmsg").textContent=mine[th.id]?`You voted for “`+th.t+`”. The driver sees it grow.`:`Vote removed.`;
+render()}
+};
+el.appendChild(b);
+});
+}
+function render(){draw(document.getElementById("cloudF"),false);draw(document.getElementById("cloudD"),true)}
+function pick(th){
+document.getElementById("topic").textContent=`Topic: `+th.t;
+document.getElementById("starters").innerHTML=th.s.map(function(x){return `<div class="starter">`+x+`</div>`}).join("");
+}
+// waveform
+var wv=document.getElementById("wv");
+for(var i=0;i<36;i++){var e=document.createElement("i");e.style.height=(10+Math.abs(Math.sin(i*0.7))*38)+"px";wv.appendChild(e)}
+var latest=null,au=null;
+document.getElementById("play").onclick=function(){
+wv.classList.add("on");
+if(latest){au=new Audio(latest);au.onended=function(){wv.classList.remove("on")};au.play();return}
+try{
+var u=new SpeechSynthesisUtterance(`Before lights out I always take three slow breaths and say my name out loud. Then I remember why I started. If today is rough for you, try that. See you at the next race.`);
+u.onend=function(){wv.classList.remove("on")};speechSynthesis.cancel();speechSynthesis.speak(u)
+}catch(e){wv.classList.remove("on")}
+};
+document.getElementById("stop").onclick=function(){wv.classList.remove("on");try{speechSynthesis.cancel()}catch(e){}if(au)au.pause()};
+// recording
+var mr=null,chunks=[],rec=document.getElementById("rec"),msg=document.getElementById("recmsg");
+rec.onclick=function(){
+if(mr&&mr.state==="recording"){mr.stop();return}
+if(!navigator.mediaDevices||!window.MediaRecorder){msg.textContent="Recording not supported here. Try on your phone browser.";return}
+navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){
+chunks=[];mr=new MediaRecorder(st);
+mr.ondataavailable=function(e){chunks.push(e.data)};
+mr.onstop=function(){
+st.getTracks().forEach(function(t){t.stop()});
+latest=URL.createObjectURL(new Blob(chunks,{type:mr.mimeType}));
+document.getElementById("notes").innerHTML=`<p style="margin-top:10px">Saved. Preview:</p><audio controls src="`+latest+`" style="width:100%"></audio>`;
+document.getElementById("fnote").textContent="Latest voice note · just recorded";
+rec.textContent="Record";rec.classList.remove("rec");msg.textContent="";
+};
+mr.start();rec.textContent="Stop";rec.classList.add("rec");msg.textContent="Recording… keep it under 90 sec";
+setTimeout(function(){if(mr&&mr.state==="recording")mr.stop()},90000);
+}).catch(function(){msg.textContent="Mic blocked. Allow mic access and try again."});
+};
+// tabs
+function tab(f){
+document.getElementById("fan").classList.toggle("hide",!f);
+document.getElementById("drv").classList.toggle("hide",f);
+document.getElementById("tf").setAttribute("aria-selected",f);
+document.getElementById("td").setAttribute("aria-selected",!f);
+render();
+}
+document.getElementById("tf").onclick=function(){tab(true)};
+document.getElementById("td").onclick=function(){tab(false)};
+render();
+})();
+</script>
+</body>
+</html>
