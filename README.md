@@ -3,6 +3,10 @@ Mobile app connects F1 Academy drivers to the fans they need to grow, and inspir
 
 Audio-first prototype: F1 Academy driver records a voice note, fans listen and vote on what she talks about next.
 
+This is currently raw! I celebrate meaningful testable functionality first before churning tokens and hours dressing up something in slick design. Feedback is welcome. Contact Kathy at [kathryn@dadeda.design](mailto:kathryn@dadeda.design) or submit an issue.
+
+Try it at [https://data-design-dimension.github.io/f1a-drive/](https://data-design-dimension.github.io/f1a-drive/) or follow instructions to run it yourself below.
+
 ## Disclaimer
 This project and its maker are not currently affiliated or endorsed by F1 Academy or Formula One Group in any way, although the opportunity to build with them would be welcome! This is a grass-roots driver-inspired fan-initiated experienc.
 
